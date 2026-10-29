@@ -6,11 +6,21 @@ import 'package:pdfrx/pdfrx.dart';
 /// One page rendered from an existing PDF: JPEG bytes plus the original page
 /// size in PDF points, so a rebuilt PDF keeps the same page dimensions.
 class RenderedPage {
-  RenderedPage(this.jpg, this.widthPt, this.heightPt);
+  RenderedPage(
+    this.jpg,
+    this.widthPt,
+    this.heightPt, {
+    this.pxWidth = 0,
+    this.pxHeight = 0,
+  });
 
   final Uint8List jpg;
   final double widthPt;
   final double heightPt;
+
+  /// Pixel dimensions of [jpg]; needed to map OCR boxes back onto the page.
+  final int pxWidth;
+  final int pxHeight;
 }
 
 /// Reads existing PDFs via the native PDFium engine (pdfrx). These are plugin
@@ -56,7 +66,13 @@ class PdfRenderService {
         final image = rendered.createImageNF();
         rendered.dispose();
         final jpg = img.encodeJpg(image, quality: quality);
-        out.add(RenderedPage(jpg, page.width, page.height));
+        out.add(RenderedPage(
+          jpg,
+          page.width,
+          page.height,
+          pxWidth: wPx,
+          pxHeight: hPx,
+        ));
       }
       return out;
     } finally {

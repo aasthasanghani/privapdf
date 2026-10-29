@@ -41,4 +41,5 @@ const List<ToolDef> kTools = [
   ToolDef(id: 'watermark', label: 'Add Watermark', icon: Icons.branding_watermark_outlined, category: ToolCategory.enhance),
   ToolDef(id: 'pagenum', label: 'Add Page Numbers', icon: Icons.format_list_numbered_outlined, category: ToolCategory.enhance),
   ToolDef(id: 'ocr', label: 'Text OCR', icon: Icons.text_fields_outlined, category: ToolCategory.enhance),
+  ToolDef(id: 'searchable', label: 'Searchable PDF', icon: Icons.manage_search_outlined, category: ToolCategory.enhance),
 ];

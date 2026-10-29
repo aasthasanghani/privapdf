@@ -7,6 +7,7 @@ import '../document_ops/reorder_rotate_screen.dart';
 import '../document_ops/split_screen.dart';
 import '../enhancements/ocr_screen.dart';
 import '../enhancements/page_numbers_screen.dart';
+import '../enhancements/searchable_pdf_screen.dart';
 import '../enhancements/watermark_screen.dart';
 import '../image_tools/images_to_pdf_screen.dart';
 import '../image_tools/pdf_to_images_screen.dart';
@@ -29,6 +30,7 @@ class HomeScreen extends ConsumerWidget {
       'watermark' => const WatermarkScreen(),
       'pagenum' => const PageNumbersScreen(),
       'ocr' => const OcrScreen(),
+      'searchable' => const SearchablePdfScreen(),
       _ => ToolPlaceholderScreen(tool: tool),
     };
     Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));
