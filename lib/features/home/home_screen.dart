@@ -5,6 +5,7 @@ import '../../core/theme/theme_controller.dart';
 import '../document_ops/merge_screen.dart';
 import '../document_ops/reorder_rotate_screen.dart';
 import '../document_ops/split_screen.dart';
+import '../enhancements/document_filter_screen.dart';
 import '../enhancements/ocr_screen.dart';
 import '../enhancements/page_numbers_screen.dart';
 import '../enhancements/searchable_pdf_screen.dart';
@@ -31,6 +32,7 @@ class HomeScreen extends ConsumerWidget {
       'pagenum' => const PageNumbersScreen(),
       'ocr' => const OcrScreen(),
       'searchable' => const SearchablePdfScreen(),
+      'filter' => const DocumentFilterScreen(),
       _ => ToolPlaceholderScreen(tool: tool),
     };
     Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));
