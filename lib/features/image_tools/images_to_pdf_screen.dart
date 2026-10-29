@@ -55,7 +55,7 @@ class _ImagesToPdfScreenState extends State<ImagesToPdfScreen> {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (_) =>
-              ResultScreen(outputPath: path, title: 'Images to PDF'),
+              ResultScreen.single(outputPath: path, title: 'Images to PDF'),
         ),
       );
     } catch (e) {

@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/theme_controller.dart';
+import '../document_ops/merge_screen.dart';
+import '../document_ops/reorder_rotate_screen.dart';
+import '../document_ops/split_screen.dart';
+import '../enhancements/ocr_screen.dart';
+import '../enhancements/page_numbers_screen.dart';
+import '../enhancements/watermark_screen.dart';
 import '../image_tools/images_to_pdf_screen.dart';
+import '../image_tools/pdf_to_images_screen.dart';
 import '../scanner/scan_screen.dart';
 import 'tool_catalog.dart';
 import 'tool_placeholder_screen.dart';
@@ -15,6 +22,13 @@ class HomeScreen extends ConsumerWidget {
     final Widget screen = switch (tool.id) {
       'scan' => const ScanScreen(),
       'img2pdf' => const ImagesToPdfScreen(),
+      'pdf2img' => const PdfToImagesScreen(),
+      'merge' => const MergeScreen(),
+      'split' => const SplitScreen(),
+      'reorder' => const ReorderRotateScreen(),
+      'watermark' => const WatermarkScreen(),
+      'pagenum' => const PageNumbersScreen(),
+      'ocr' => const OcrScreen(),
       _ => ToolPlaceholderScreen(tool: tool),
     };
     Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));

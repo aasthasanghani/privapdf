@@ -46,7 +46,7 @@ class _ScanScreenState extends State<ScanScreen> {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (_) =>
-              ResultScreen(outputPath: out, title: 'Scan Document'),
+              ResultScreen.single(outputPath: out, title: 'Scan Document'),
         ),
       );
     } catch (e) {

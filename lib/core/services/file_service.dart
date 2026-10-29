@@ -26,6 +26,15 @@ class FileService {
     return '${dir.path}/${prefix}_$stamp.$ext';
   }
 
+  static Future<Directory> tempDir() async {
+    final base = await getTemporaryDirectory();
+    final dir = Directory('${base.path}/work');
+    if (!await dir.exists()) {
+      await dir.create(recursive: true);
+    }
+    return dir;
+  }
+
   static String fileName(String path) =>
       path.split(Platform.pathSeparator).last.split('/').last;
 

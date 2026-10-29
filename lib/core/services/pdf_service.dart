@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:image/image.dart' as img;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
@@ -87,6 +88,133 @@ Future<String> _buildImagesPdf(_ImagesToPdfParams p) async {
   return p.outputPath;
 }
 
+/// Where a page number is stamped, or [none].
+enum PageNumberPosition { none, footer, header }
+
+extension PageNumberPositionLabel on PageNumberPosition {
+  String get label => switch (this) {
+        PageNumberPosition.none => 'None',
+        PageNumberPosition.footer => 'Footer',
+        PageNumberPosition.header => 'Header',
+      };
+}
+
+/// A page to place into a rebuilt PDF: rendered JPEG plus the page size in
+/// points so dimensions are preserved. [quarterTurns] rotates the page by
+/// multiples of 90° clockwise.
+class PageSpec {
+  const PageSpec(this.jpg, this.widthPt, this.heightPt, {this.quarterTurns = 0});
+
+  final Uint8List jpg;
+  final double widthPt;
+  final double heightPt;
+  final int quarterTurns;
+}
+
+class _AssembleParams {
+  const _AssembleParams(
+    this.pages,
+    this.outputPath,
+    this.watermark,
+    this.pageNumberIndex,
+  );
+
+  final List<PageSpec> pages;
+  final String outputPath;
+  final String? watermark;
+  final int pageNumberIndex;
+}
+
+/// Rebuilds a PDF from rendered pages, optionally stamping a diagonal
+/// watermark and/or page numbers as crisp vector text over each page.
+Future<String> _assemblePdf(_AssembleParams p) async {
+  final doc = pw.Document();
+  final position = PageNumberPosition.values[p.pageNumberIndex];
+  final total = p.pages.length;
+
+  for (var i = 0; i < total; i++) {
+    final spec = p.pages[i];
+
+    var jpg = spec.jpg;
+    var widthPt = spec.widthPt;
+    var heightPt = spec.heightPt;
+    final turns = ((spec.quarterTurns % 4) + 4) % 4;
+    if (turns != 0) {
+      final decoded = img.decodeImage(spec.jpg);
+      if (decoded != null) {
+        final rotated = img.copyRotate(decoded, angle: turns * 90);
+        jpg = img.encodeJpg(rotated, quality: 85);
+        if (turns.isOdd) {
+          final t = widthPt;
+          widthPt = heightPt;
+          heightPt = t;
+        }
+      }
+    }
+
+    final image = pw.MemoryImage(jpg);
+    final format = PdfPageFormat(widthPt, heightPt);
+
+    doc.addPage(
+      pw.Page(
+        pageFormat: format,
+        build: (context) {
+          final layers = <pw.Widget>[
+            pw.Positioned.fill(
+              child: pw.Image(image, fit: pw.BoxFit.fill),
+            ),
+          ];
+
+          if (p.watermark != null && p.watermark!.trim().isNotEmpty) {
+            layers.add(
+              pw.Positioned.fill(
+                child: pw.Center(
+                  child: pw.Transform.rotate(
+                    angle: 0.6,
+                    child: pw.Opacity(
+                      opacity: 0.22,
+                      child: pw.Text(
+                        p.watermark!,
+                        style: pw.TextStyle(
+                          fontSize: widthPt / 10,
+                          fontWeight: pw.FontWeight.bold,
+                          color: PdfColors.grey600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }
+
+          if (position != PageNumberPosition.none) {
+            final label = pw.Text(
+              '${i + 1} / $total',
+              style: const pw.TextStyle(fontSize: 11, color: PdfColors.grey800),
+            );
+            layers.add(
+              pw.Positioned(
+                left: 0,
+                right: 0,
+                top: position == PageNumberPosition.header ? 12 : null,
+                bottom: position == PageNumberPosition.footer ? 12 : null,
+                child: pw.Center(child: label),
+              ),
+            );
+          }
+
+          return pw.Stack(children: layers);
+        },
+      ),
+    );
+  }
+
+  final out = File(p.outputPath);
+  await out.writeAsBytes(await doc.save());
+  return p.outputPath;
+}
+
 /// Pure-Dart PDF operations. Heavy work runs in a background isolate so the
 /// UI never stutters; no document bytes ever leave the device.
 class PdfService {
@@ -106,6 +234,20 @@ class PdfService {
         margin.points,
         orientation.index,
       ),
+    );
+  }
+
+  /// Rebuilds a PDF from already-rendered [pages]. Used by merge, split,
+  /// reorder/rotate, watermark and page-number tools.
+  static Future<String> assemble({
+    required List<PageSpec> pages,
+    required String outputPath,
+    String? watermark,
+    PageNumberPosition pageNumbers = PageNumberPosition.none,
+  }) {
+    return compute(
+      _assemblePdf,
+      _AssembleParams(pages, outputPath, watermark, pageNumbers.index),
     );
   }
 }
