@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/theme_controller.dart';
+import '../image_tools/images_to_pdf_screen.dart';
+import '../scanner/scan_screen.dart';
 import 'tool_catalog.dart';
 import 'tool_placeholder_screen.dart';
 
@@ -10,9 +12,12 @@ class HomeScreen extends ConsumerWidget {
 
   void _open(BuildContext context, ToolDef tool) {
     // Real feature screens are swapped in here as each one is implemented.
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => ToolPlaceholderScreen(tool: tool)),
-    );
+    final Widget screen = switch (tool.id) {
+      'scan' => const ScanScreen(),
+      'img2pdf' => const ImagesToPdfScreen(),
+      _ => ToolPlaceholderScreen(tool: tool),
+    };
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));
   }
 
   @override
