@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/theme_controller.dart';
 import '../document_ops/compress_screen.dart';
 import '../document_ops/merge_screen.dart';
+import '../document_ops/password_protect_screen.dart';
 import '../document_ops/reorder_rotate_screen.dart';
 import '../document_ops/split_screen.dart';
 import '../files/files_screen.dart';
@@ -36,6 +37,7 @@ class HomeScreen extends ConsumerWidget {
       'searchable' => const SearchablePdfScreen(),
       'filter' => const DocumentFilterScreen(),
       'compress' => const CompressScreen(),
+      'password' => const PasswordProtectScreen(),
       _ => ToolPlaceholderScreen(tool: tool),
     };
     Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));
