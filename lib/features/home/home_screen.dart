@@ -131,7 +131,7 @@ class _PrivacyBadge extends StatelessWidget {
               style: TextStyle(
                 color: scheme.onSecondaryContainer,
                 fontWeight: FontWeight.w600,
-                fontSize: 13,
+                fontSize: 14,
               ),
             ),
           ),
@@ -210,7 +210,7 @@ class _CategoryHeader extends StatelessWidget {
     return Text(
       label.toUpperCase(),
       style: TextStyle(
-        fontSize: 12,
+        fontSize: 13,
         fontWeight: FontWeight.w700,
         letterSpacing: 1.2,
         color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -232,10 +232,10 @@ class _ToolGrid extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       padding: EdgeInsets.zero,
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 200,
-        mainAxisSpacing: 12,
-        crossAxisSpacing: 12,
-        childAspectRatio: 1.35,
+        maxCrossAxisExtent: 168,
+        mainAxisSpacing: 14,
+        crossAxisSpacing: 14,
+        childAspectRatio: 1.0,
       ),
       itemCount: tools.length,
       itemBuilder: (context, i) => _ToolTile(tool: tools[i], onTap: () => onTap(tools[i])),
@@ -252,30 +252,39 @@ class _ToolTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return Card(
-      color: scheme.surfaceContainerHighest,
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(14),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: scheme.primaryContainer,
-                  borderRadius: BorderRadius.circular(12),
+    return Semantics(
+      button: true,
+      label: tool.label,
+      child: Card(
+        color: scheme.surfaceContainerHighest,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(20),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  width: 54,
+                  height: 54,
+                  decoration: BoxDecoration(
+                    color: scheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Icon(tool.icon,
+                      size: 30, color: scheme.onPrimaryContainer),
                 ),
-                child: Icon(tool.icon, size: 22, color: scheme.onPrimaryContainer),
-              ),
-              Text(
-                tool.label,
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-              ),
-            ],
+                Text(
+                  tool.label,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w600, height: 1.15),
+                ),
+              ],
+            ),
           ),
         ),
       ),

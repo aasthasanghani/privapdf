@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/services/file_service.dart';
 import '../../core/services/pdf_service.dart';
+import '../shared/image_preview_screen.dart';
 import '../shared/result_screen.dart';
 
 class ImagesToPdfScreen extends StatefulWidget {
@@ -89,22 +90,31 @@ class _ImagesToPdfScreenState extends State<ImagesToPdfScreen> {
                         color: scheme.surfaceContainerHighest,
                         margin: const EdgeInsets.only(bottom: 10),
                         child: ListTile(
-                          leading: ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.file(
-                              File(path),
-                              width: 44,
-                              height: 44,
-                              fit: BoxFit.cover,
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          leading: GestureDetector(
+                            onTap: () => openImagePreview(context, path),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.file(
+                                File(path),
+                                width: 54,
+                                height: 70,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
-                          title: Text('Page ${i + 1}'),
+                          title: Text('Page ${i + 1}',
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w600, fontSize: 16)),
                           subtitle: Text(
-                            FileService.fileName(path),
+                            'Tap image to view',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                           trailing: IconButton(
+                            tooltip: 'Remove',
+                            iconSize: 26,
                             icon: const Icon(Icons.close),
                             onPressed: () => _removeAt(i),
                           ),
