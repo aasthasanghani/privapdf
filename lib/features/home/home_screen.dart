@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/theme_controller.dart';
+import '../document_ops/compress_screen.dart';
 import '../document_ops/merge_screen.dart';
 import '../document_ops/reorder_rotate_screen.dart';
 import '../document_ops/split_screen.dart';
+import '../files/files_screen.dart';
 import '../enhancements/document_filter_screen.dart';
 import '../enhancements/ocr_screen.dart';
 import '../enhancements/page_numbers_screen.dart';
@@ -33,6 +35,7 @@ class HomeScreen extends ConsumerWidget {
       'ocr' => const OcrScreen(),
       'searchable' => const SearchablePdfScreen(),
       'filter' => const DocumentFilterScreen(),
+      'compress' => const CompressScreen(),
       _ => ToolPlaceholderScreen(tool: tool),
     };
     Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));
@@ -52,6 +55,13 @@ class HomeScreen extends ConsumerWidget {
               title: const Text('PrivaPDF',
                   style: TextStyle(fontWeight: FontWeight.w700)),
               actions: [
+                IconButton(
+                  tooltip: 'My files',
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const FilesScreen()),
+                  ),
+                  icon: const Icon(Icons.folder_outlined),
+                ),
                 IconButton(
                   tooltip: 'Theme',
                   onPressed: controller.cycle,

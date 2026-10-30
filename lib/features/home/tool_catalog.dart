@@ -34,6 +34,7 @@ const List<ToolDef> kTools = [
   ToolDef(id: 'merge', label: 'Merge PDFs', icon: Icons.merge_outlined, category: ToolCategory.organize),
   ToolDef(id: 'split', label: 'Split & Extract', icon: Icons.content_cut_outlined, category: ToolCategory.organize),
   ToolDef(id: 'reorder', label: 'Reorder & Rotate', icon: Icons.swap_vert_outlined, category: ToolCategory.organize),
+  ToolDef(id: 'compress', label: 'Compress PDF', icon: Icons.compress, category: ToolCategory.organize),
   // Convert
   ToolDef(id: 'img2pdf', label: 'Images to PDF', icon: Icons.image_outlined, category: ToolCategory.convert),
   ToolDef(id: 'pdf2img', label: 'PDF to Images', icon: Icons.photo_library_outlined, category: ToolCategory.convert),

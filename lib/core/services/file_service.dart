@@ -35,6 +35,18 @@ class FileService {
     return dir;
   }
 
+  /// All saved output files, newest first.
+  static Future<List<File>> listOutputs() async {
+    final dir = await outputDir();
+    final files = <File>[];
+    await for (final e in dir.list()) {
+      if (e is File) files.add(e);
+    }
+    files.sort(
+        (a, b) => b.statSync().modified.compareTo(a.statSync().modified));
+    return files;
+  }
+
   static String fileName(String path) =>
       path.split(Platform.pathSeparator).last.split('/').last;
 
